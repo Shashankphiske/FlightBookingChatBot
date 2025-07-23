@@ -58,8 +58,6 @@ export default function RegisterPage() {
         <div className="px-40 flex flex-1 justify-center py-5">
           <div className="flex flex-col w-[512px] max-w-[512px] py-5 max-w-[960px] flex-1">
             <h2 className="text-[#121417] text-[28px] font-bold text-center pb-3 pt-5 px-4">Create your account</h2>
-
-            {/* Name Field */}
             <div className="flex max-w-[480px] px-4 py-3">
               <label className="flex flex-col flex-1">
                 <p className="text-base font-medium pb-2">Name</p>
@@ -72,8 +70,6 @@ export default function RegisterPage() {
                 />
               </label>
             </div>
-
-            {/* Email Field */}
             <div className="flex max-w-[480px] px-4 py-3">
               <label className="flex flex-col flex-1">
                 <p className="text-base font-medium pb-2">Email</p>
@@ -86,8 +82,6 @@ export default function RegisterPage() {
                 />
               </label>
             </div>
-
-            {/* Phone Number Field */}
             <div className="flex max-w-[480px] px-4 py-3">
               <label className="flex flex-col flex-1">
                 <p className="text-base font-medium pb-2">Phone number</p>
@@ -100,8 +94,6 @@ export default function RegisterPage() {
                 />
               </label>
             </div>
-
-            {/* Password Field */}
             <div className="flex max-w-[480px] px-4 py-3">
               <label className="flex flex-col flex-1">
                 <p className="text-base font-medium pb-2">Password</p>
@@ -114,8 +106,6 @@ export default function RegisterPage() {
                 />
               </label>
             </div>
-
-            {/* Register Button */}
             <div className="flex px-4 py-3">
               <button
                 onClick={handleRegister}
@@ -124,8 +114,6 @@ export default function RegisterPage() {
                 Register
               </button>
             </div>
-
-            {/* Login Redirect */}
             <p
               className="text-[#677583] text-sm text-center underline cursor-pointer px-4 pb-3 pt-1"
               onClick={() => navigate('/login')}

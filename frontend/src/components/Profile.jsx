@@ -14,7 +14,7 @@ const Profile = ({ user }) => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    navigate('/'); // Redirect to login page
+    navigate('/');
   };
 
 
@@ -34,11 +34,9 @@ const handleSaveChanges = async () => {
       'https://flightbookingbackend.netlify.app/.netlify/functions/server/api/auth/update-profile',
       {
         id: storedUser._id,
-        ...formData, // assumes formData contains updated fields like name, email, phoneNumber
+        ...formData,
       }
     );
-
-    // Update localStorage with the new user data
     localStorage.setItem('user', JSON.stringify(response.data.updatedUser));
     alert('Profile updated successfully!');
   } catch (error) {

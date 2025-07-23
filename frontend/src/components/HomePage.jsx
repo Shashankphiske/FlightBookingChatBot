@@ -24,7 +24,7 @@ export default function HomePage() {
 
   const [message, setMessage] = useState('');
   const [chatHistory, setChatHistory] = useState([]);
-  const [flights, setFlights] = useState([]); // Store flights separately
+  const [flights, setFlights] = useState([]);
 
   const handleSend = async () => {
     if (!message.trim()) return;
@@ -68,11 +68,11 @@ export default function HomePage() {
 const handlePayment = (flight) => {
   const userString = localStorage.getItem("user");
   if (!userString) {
-    alert("❌ Please log in to book a flight.");
+    alert("Please log in to book a flight.");
     return;
   }
 
-  const user = JSON.parse(userString); // parse the stored user object
+  const user = JSON.parse(userString);
 
   const userData = {
     name: user.name,
@@ -81,11 +81,11 @@ const handlePayment = (flight) => {
   };
 
   if (flight.price === 0) {
-    alert(`✅ Flight ${flight.flightNumber} from ${flight.origin} to ${flight.destination} has been booked for free!`);
+    alert(`Flight ${flight.flightNumber} from ${flight.origin} to ${flight.destination} has been booked for free!`);
 
     axios.post('https://flightbookingbackend.netlify.app/.netlify/functions/server/api/book', {
       flight,
-      userId: user._id, // pass the userId to backend
+      userId: user._id,
     }).then(() => {
       console.log("Free flight booking recorded.");
     }).catch((err) => {
@@ -96,12 +96,12 @@ const handlePayment = (flight) => {
   }
   const options = {
     key: "rzp_test_NZd6RqdGNW1Kng",
-    amount: flight.price * 100, // In paise
+    amount: flight.price,
     currency: 'INR',
     name: 'SkyBound Booking',
     description: `Flight ${flight.flightNumber} - ${flight.origin} to ${flight.destination}`,
     handler: function (response) {
-      alert(`🎉 Payment Successful!\nPayment ID: ${response.razorpay_payment_id}`);
+      alert(`Payment Successful!\nPayment ID: ${response.razorpay_payment_id}`);
 
       axios.post('https://flightbookingbackend.netlify.app/.netlify/functions/server/api/book', {
         flight,
@@ -133,10 +133,8 @@ const handlePayment = (flight) => {
   return (
     <div className="relative flex min-h-screen flex-col bg-white overflow-x-hidden font-['Plus Jakarta Sans']">
       <div className="flex h-full grow flex-col">
-        {/* Header */}
         <header className="flex items-center justify-between border-b border-[#f0f2f5] px-10 py-3">
           <div className="flex items-center gap-4 text-[#111418]">
-            <div className="w-4 h-4">{/* Icon */}</div>
             <h2 className="text-lg font-bold">SkyBound</h2>
           </div>
           <div className="flex flex-1 justify-end gap-8">
@@ -144,18 +142,16 @@ const handlePayment = (flight) => {
               <Link to="/profile" className="text-sm font-medium">Profile</Link>
               <Link to="/itinerary" className="text-sm font-medium">Itinerary</Link>
             </div>
-            <button className="flex h-10 px-2.5 items-center rounded-xl bg-[#f0f2f5] text-sm font-bold">{/* Bell */}</button>
+            <button className="flex h-10 px-2.5 items-center rounded-xl bg-[#f0f2f5] text-sm font-bold"></button>
             <div className="bg-center bg-cover rounded-full w-10 h-10" style={{ backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/...')` }} />
           </div>
         </header>
 
-        {/* Main Content */}
         <div className="px-10 flex justify-center py-5 grow">
           <div className="flex flex-col max-w-[960px] w-full">
             <h2 className="text-[28px] font-bold text-center py-5">Welcome to SkyBound</h2>
             <p className="text-base text-center">How can I help you today?</p>
 
-            {/* Chat History */}
             <div className="flex flex-col gap-4 py-4 max-h-[400px] overflow-y-auto px-2">
               {chatHistory.map((msg, idx) => (
                 <div key={idx} className={`text-sm ${msg.sender === 'user' ? 'self-end text-right' : 'self-start text-left'}`}>
@@ -167,7 +163,6 @@ const handlePayment = (flight) => {
               ))}
             </div>
 
-            {/* Input Box */}
             <div className="flex items-center px-4 py-3 gap-3">
               <label className="flex flex-col w-full h-12">
                 <div className="flex w-full h-full items-stretch rounded-xl gap-2">

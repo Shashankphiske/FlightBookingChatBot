@@ -54,7 +54,7 @@ const handleCancel = async (reference) => {
     const res = await axios.delete(`https://flightbookingbackend.netlify.app/,netlify/functions/server/bookings/${reference}`);
     if (res.status === 200) {
       alert("Booking cancelled successfully.");
-      await fetchBookings(setUpcomingTrips, setPastTrips); // Refetch
+      await fetchBookings(setUpcomingTrips, setPastTrips);
     }
   } catch (err) {
     console.error("Cancellation failed:", err);
@@ -66,7 +66,6 @@ const handleCancel = async (reference) => {
 
   return (
     <div className="min-h-screen bg-white font-['Plus_Jakarta_Sans']">
-      {/* Header */}
       <header className="flex items-center justify-between border-b px-10 py-3">
         <div className="flex items-center gap-4 text-[#121417]">
           <div className="w-4 h-4">
@@ -96,15 +95,12 @@ const handleCancel = async (reference) => {
         </div>
       </header>
 
-      {/* Content */}
       <main className="px-40 py-5">
         <div className="max-w-[960px] mx-auto">
           <div className="p-4">
             <h1 className="text-[32px] font-bold text-[#121417]">Trips</h1>
             <p className="text-sm text-[#677583]">View your upcoming and past trips</p>
           </div>
-
-          {/* Upcoming Section */}
           <section className="px-4 pt-5">
             <h2 className="text-[22px] font-bold text-[#121417] pb-3">Upcoming</h2>
             {upcomingTrips.length === 0 ? (
@@ -140,8 +136,6 @@ const handleCancel = async (reference) => {
               ))
             )}
           </section>
-
-          {/* Past Section */}
           <section className="px-4 pt-5">
             <h2 className="text-[22px] font-bold text-[#121417] pb-3">Past</h2>
             {pastTrips.map((trip, index) => (

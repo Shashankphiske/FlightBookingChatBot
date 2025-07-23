@@ -17,7 +17,6 @@ const paymentRoutes = require('../payment');
 const Booking = require('../booking');
 
 
-// Replace with your actual connection string from MongoDB Atlas
 const MONGO_URI = 'mongodb+srv://sspuser:0511@cluster0.zesp8.mongodb.net/FlightData?retryWrites=true&w=majority&appName=Cluster0';
 
 mongoose.connect(MONGO_URI, {
@@ -47,8 +46,6 @@ const sessionClient = new dialogflow.SessionsClient({
 app.use('/.netlify/functions/server/api/payment', paymentRoutes);
 app.use('/.netlify/functions/server/api/auth', authRoutes);
 
-
-// Webhook route
 app.post('/.netlify/functions/server/webhook', (req, res) => {
   const intentName = req.body.queryResult.intent.displayName;
   const origin = req.body.queryResult.parameters['origin'];
@@ -72,7 +69,6 @@ app.post('/.netlify/functions/server/webhook', (req, res) => {
     });
   }
 
-  // Default fallback
   res.json({ fulfillmentText: "Sorry, I didn't understand that request." });
 });
 
@@ -100,7 +96,6 @@ app.post('/.netlify/functions/server/api/message', async (req, res) => {
     console.log("Detected intent:", result.intent.displayName);
     console.log("Parameters:", result.parameters.fields);
 
-    // Extract parameters
     const params = result.parameters.fields;
     const origin = params.origin?.listValue?.values?.[0]?.stringValue || '';
     const destination = params.destination?.listValue?.values?.[0]?.stringValue || '';
@@ -115,24 +110,20 @@ app.post('/.netlify/functions/server/api/message', async (req, res) => {
       });
     }
 
-    // Normalize travel date to YYYY-MM-DD
     const isoDate = new Date(travelDateRaw).toISOString().split('T')[0];
 
-    // Filter flights by mandatory fields
     let matchedFlights = flights.filter(flight =>
       flight.origin.toLowerCase() === origin.toLowerCase() &&
       flight.destination.toLowerCase() === destination.toLowerCase() &&
       flight.date === isoDate
     );
 
-    // Optional filter: flight class
     if (flightClass) {
       matchedFlights = matchedFlights.filter(flight =>
         flight.class?.toLowerCase() === flightClass.toLowerCase()
       );
     }
 
-    // Optional filter: preferred airline
     if (preferredAirline.length > 0) {
       matchedFlights = matchedFlights.filter(flight =>
         preferredAirline.includes(flight.company)
@@ -166,7 +157,7 @@ app.post('/.netlify/functions/server/api/book', async (req, res) => {
   }
 
   try {
-    // Optional: Fetch user data from DB if needed
+
     const user = await User.findById(userId);
     if (!user) return res.status(404).json({ error: 'User not found.' });
 
@@ -213,7 +204,6 @@ app.delete("/.netlify/functions/server/bookings/:reference", async (req, res) =>
   try {
     const reference = req.params.reference;
 
-    // Match _id ending with the reference string
     const booking = await Booking.findOne({ _id: reference });
 
     if (!booking) {

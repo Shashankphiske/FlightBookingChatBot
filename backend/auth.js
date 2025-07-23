@@ -7,7 +7,6 @@ const { authenticateToken } = require("./middleware/authenticateToken");
 
 const router = express.Router();
 
-// routes/auth.js or similar
 router.put('/update-profile', async (req, res) => {
     const body = JSON.parse(req.body);
   const { id, name, email, phoneNumber } = body;
@@ -38,7 +37,6 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ error: "User already exists" });
     }
 
-    // Hash password before saving
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -46,7 +44,7 @@ router.post("/register", async (req, res) => {
       name,
       email,
       phoneNumber,
-      password: hashedPassword, // Save hashed password
+      password: hashedPassword,
     });
 
     const token = generateToken(user._id);
@@ -66,9 +64,6 @@ router.post("/register", async (req, res) => {
   }
 });
 
-
-
-// Login
 router.post("/login", async (req, res) => {
     const body = JSON.parse(req.body);
 
@@ -77,24 +72,20 @@ router.post("/login", async (req, res) => {
   console.log(req);
 
   try {
-    // Find user by email
     const user = await User.findOne({ email });
     console.log(user);
     if (!user) {
       return res.status(400).json({ error: "Invalid credentials" });
     }
 
-    // Compare password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ error: "Invalid credentials" });
     }
 
-    // Generate token
     const token = generateToken(user._id);
     console.log(token);
 
-    // Respond with user and token
     res.json({
       token,
       user: {

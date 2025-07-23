@@ -10,7 +10,6 @@ export default function RazorpayButton({ flight }) {
       description: `Booking for ${flight.company}`,
       handler: function (response) {
         alert("Payment Successful!");
-        // Save booking
         const bookings = JSON.parse(localStorage.getItem("bookings") || "[]");
         bookings.push({ ...flight, paymentId: response.razorpay_payment_id });
         localStorage.setItem("bookings", JSON.stringify(bookings));
