@@ -9,6 +9,7 @@ const { v4: uuidv4 } = require('uuid');
 const mongoose = require('mongoose');
 const authRoutes = require('./auth');
 const protect = require('./middleware/auth');
+const User = require("./user");
 
 const paymentRoutes = require('./payment');
 const Booking = require('./booking');
@@ -152,37 +153,75 @@ app.post('/api/message', async (req, res) => {
   }
 });
 
-app.post('/api/book', protect, async (req, res) => {
-  const { flight } = req.body;
+app.post('/api/book', async (req, res) => {
+  const { flight, userId } = req.body;
 
-  if (!flight || !flight.flightNumber || !flight.origin || !flight.destination) {
-    return res.status(400).json({ error: 'Missing flight details.' });
+  if (!flight || !flight.flightNumber || !flight.origin || !flight.destination || !userId) {
+    return res.status(400).json({ error: 'Missing flight or user details.' });
   }
 
   try {
+    // Optional: Fetch user data from DB if needed
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: 'User not found.' });
+
     const booking = new Booking({
       flightNumber: flight.flightNumber,
       origin: flight.origin,
       destination: flight.destination,
-      departureTime: flight.departureTime,
-      arrivalTime: flight.arrivalTime,
+      departureTime: flight.time,
+      date: flight.date,
       price: flight.price,
       user: {
-        name: req.user.name,
-        email: req.user.email,
+        name: user.name,
+        email: user.email,
       },
     });
 
     await booking.save();
+
     res.status(200).json({
       success: true,
       message: `Flight ${flight.flightNumber} successfully booked!`,
     });
   } catch (err) {
+    console.error('Booking error:', err);
     res.status(500).json({ success: false, error: 'Booking failed.' });
   }
 });
 
+app.get("/bookings/:email", async (req, res) => {
+  try {
+    const userEmail = req.params.email;
+
+    const bookings = await Booking.find({ "user.email": userEmail });
+    console.log(bookings);
+
+    res.status(200).json(bookings);
+  } catch (error) {
+    console.error("Error fetching bookings:", error);
+    res.status(500).json({ message: "Failed to fetch bookings for user." });
+  }
+});
+
+app.delete("/bookings/:reference", async (req, res) => {
+  try {
+    const reference = req.params.reference;
+
+    // Match _id ending with the reference string
+    const booking = await Booking.findOne({ _id: reference });
+
+    if (!booking) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+
+    await booking.deleteOne();
+    res.status(200).json({ message: "Booking cancelled" });
+  } catch (err) {
+    console.error("Error cancelling booking:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

@@ -3,16 +3,40 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('./user');
 const generateToken = require('./generateTokens');
+const { authenticateToken } = require("./middleware/authenticateToken");
 
 const router = express.Router();
 
-router.post('/register', async (req, res) => {
+// routes/auth.js or similar
+router.put('/update-profile', async (req, res) => {
+  const { id, name, email, phoneNumber } = req.body;
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { name, email, phoneNumber },
+      { new: true }
+    );
+
+    res.json({ updatedUser });
+  } catch (err) {
+    console.error('Update failed:', err);
+    res.status(500).json({ error: 'Profile update failed' });
+  }
+});
+
+
+
+router.post("/register", async (req, res) => {
   const { name, email, phoneNumber, password } = req.body;
 
   try {
     const existing = await User.findOne({ email });
-    if (existing) return res.status(400).json({ error: 'User already exists' });
+    if (existing) {
+      return res.status(400).json({ error: "User already exists" });
+    }
 
+    // Hash password before saving
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -20,29 +44,37 @@ router.post('/register', async (req, res) => {
       name,
       email,
       phoneNumber,
-      password: hashedPassword
+      password: hashedPassword, // Save hashed password
     });
 
     const token = generateToken(user._id);
 
     res.json({
       token,
-      user: { id: user._id, name, email, phoneNumber }
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+      },
     });
-  } catch (error) {
-    console.error("Register error:", error);
+  } catch (err) {
+    console.error("Register error:", err);
     res.status(500).json({ error: "Server error" });
   }
 });
 
 
+
 // Login
 router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  const email = req.body.email.trim();
+  const password = req.body.password.trim();
 
   try {
     // Find user by email
     const user = await User.findOne({ email });
+    console.log(user);
     if (!user) {
       return res.status(400).json({ error: "Invalid credentials" });
     }
@@ -55,12 +87,13 @@ router.post("/login", async (req, res) => {
 
     // Generate token
     const token = generateToken(user._id);
+    console.log(token);
 
     // Respond with user and token
     res.json({
       token,
       user: {
-        id: user._id,
+        _id: user._id,
         name: user.name,
         email: user.email,
         phoneNumber: user.phoneNumber,

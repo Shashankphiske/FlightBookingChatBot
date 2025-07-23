@@ -5,7 +5,7 @@
     "plane": "Airbus A320",
     "origin": "Pune",
     "destination": "Mumbai",
-    "date": "2025-06-20",
+    "date": "2025-06-30",
     "time": "08:45",
     "class": "Economy",
     "price": 2500
@@ -16,7 +16,7 @@
     "plane": "Boeing 737",
     "origin": "Pune",
     "destination": "Mumbai",
-    "date": "2025-06-20",
+    "date": "2025-06-30",
     "time": "12:15",
     "class": "Business",
     "price": 5400
@@ -82,7 +82,7 @@
     "plane": "Airbus A320",
     "origin": "Pune",
     "destination": "Mumbai",
-    "date": "2025-06-20",
+    "date": "2025-07-30",
     "time": "08:45",
     "class": "Economy",
     "price": 0
@@ -93,7 +93,7 @@
     "plane": "Boeing 737",
     "origin": "Pune",
     "destination": "Mumbai",
-    "date": "2025-06-20",
+    "date": "2025-07-30",
     "time": "12:15",
     "class": "Business",
     "price": 0
@@ -104,7 +104,7 @@
     "plane": "Bombardier Q400",
     "origin": "Delhi",
     "destination": "Bangalore",
-    "date": "2025-06-21",
+    "date": "2025-07-21",
     "time": "06:30",
     "class": "Economy",
     "price": 0
