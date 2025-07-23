@@ -1,6 +1,6 @@
 # FlightBookingChatBot
 
-the website url : https://flightbookingchatbot.netlify.app/
+the website url : https://flightbookingchatbot.netlify.app/, the backend is : https://flightbookingbackend.netlify.app/.netlify/functions/server/
 
 you will be provided with a login page, if you dont have an account click on the register button and register yourself (if any errors just use : shashankphiske@gmail.com and pass : ssp )
 
