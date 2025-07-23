@@ -14,7 +14,7 @@ const Itinerary = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user || !user.email) return;
 
-    const res = await axios.get(`http://localhost:3000/bookings/${user.email}`);
+    const res = await axios.get(`https://flightbookingbackend.netlify.app/.netlify/functions/server/bookings/${user.email}`);
     const bookings = res.data;
 
     const now = dayjs();
@@ -51,7 +51,7 @@ useEffect(() => {
 
 const handleCancel = async (reference) => {
   try {
-    const res = await axios.delete(`http://localhost:3000/bookings/${reference}`);
+    const res = await axios.delete(`https://flightbookingbackend.netlify.app/,netlify/functions/server/bookings/${reference}`);
     if (res.status === 200) {
       alert("Booking cancelled successfully.");
       await fetchBookings(setUpcomingTrips, setPastTrips); // Refetch

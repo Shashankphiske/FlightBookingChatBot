@@ -31,7 +31,7 @@ const handleSaveChanges = async () => {
     }
 
     const response = await axios.put(
-      'http://localhost:3000/api/auth/update-profile',
+      'https://flightbookingbackend.netlify.app/.netlify/functions/server/api/auth/update-profile',
       {
         id: storedUser._id,
         ...formData, // assumes formData contains updated fields like name, email, phoneNumber

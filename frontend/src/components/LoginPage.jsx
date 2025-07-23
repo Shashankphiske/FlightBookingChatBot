@@ -11,10 +11,9 @@ const handleLogin = async () => {
   if (!email || !password) return alert('Please fill in all fields');
 
   try {
-    const res = await axios.post('http://localhost:3000/api/auth/login', { email, password });
+    const res = await axios.post('https://flightbookingbackend.netlify.app/.netlify/functions/server/api/auth/login', { email, password });
     localStorage.setItem('token', res.data.token);
     localStorage.setItem('user', JSON.stringify(res.data.user));
-    console.log(res.data.token);
     setUser(res.data.user); // this updates App's state// navigate only after user is set
   } catch (err) {
     console.error(err);

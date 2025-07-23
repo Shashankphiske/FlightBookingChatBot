@@ -9,7 +9,8 @@ const router = express.Router();
 
 // routes/auth.js or similar
 router.put('/update-profile', async (req, res) => {
-  const { id, name, email, phoneNumber } = req.body;
+    const body = JSON.parse(req.body);
+  const { id, name, email, phoneNumber } = body;
 
   try {
     const updatedUser = await User.findByIdAndUpdate(
@@ -28,7 +29,8 @@ router.put('/update-profile', async (req, res) => {
 
 
 router.post("/register", async (req, res) => {
-  const { name, email, phoneNumber, password } = req.body;
+    const body = JSON.parse(req.body)
+  const { name, email, phoneNumber, password } = body;
 
   try {
     const existing = await User.findOne({ email });
@@ -68,8 +70,11 @@ router.post("/register", async (req, res) => {
 
 // Login
 router.post("/login", async (req, res) => {
-  const email = req.body.email.trim();
-  const password = req.body.password.trim();
+    const body = JSON.parse(req.body);
+
+    const { email, password } = body;
+
+  console.log(req);
 
   try {
     // Find user by email

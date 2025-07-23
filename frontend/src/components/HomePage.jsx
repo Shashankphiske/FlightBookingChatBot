@@ -11,7 +11,7 @@ export default function HomePage() {
     const token = localStorage.getItem('token');
     if (!token) return;
 
-    axios.get('http://localhost:3000/api/me', {
+    axios.get('https://flightbookingbackend.netlify.app/.netlify/functions/server/api/me', {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => setUser(res.data.user))
@@ -39,7 +39,7 @@ export default function HomePage() {
     setMessage('');
 
     try {
-      const res = await axios.post('http://localhost:3000/api/message', { message });
+      const res = await axios.post('https://flightbookingbackend.netlify.app/.netlify/functions/server/api/message', { message });
 
       const botMessage = {
         sender: 'bot',
@@ -83,7 +83,7 @@ const handlePayment = (flight) => {
   if (flight.price === 0) {
     alert(`✅ Flight ${flight.flightNumber} from ${flight.origin} to ${flight.destination} has been booked for free!`);
 
-    axios.post('http://localhost:3000/api/book', {
+    axios.post('https://flightbookingbackend.netlify.app/.netlify/functions/server/api/book', {
       flight,
       userId: user._id, // pass the userId to backend
     }).then(() => {
@@ -103,7 +103,7 @@ const handlePayment = (flight) => {
     handler: function (response) {
       alert(`🎉 Payment Successful!\nPayment ID: ${response.razorpay_payment_id}`);
 
-      axios.post('http://localhost:3000/api/book', {
+      axios.post('https://flightbookingbackend.netlify.app/.netlify/functions/server/api/book', {
         flight,
         paymentId: response.razorpay_payment_id,
       }, {

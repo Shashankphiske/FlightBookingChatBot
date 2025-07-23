@@ -7,12 +7,14 @@ const path = require('path');
 const fs = require("fs");
 const { v4: uuidv4 } = require('uuid');
 const mongoose = require('mongoose');
-const authRoutes = require('./auth');
-const protect = require('./middleware/auth');
-const User = require("./user");
+const authRoutes = require('../auth');
+const protect = require('../middleware/auth');
+const User = require("../user");
+const serverless = require("serverless-http");
+const flights = require("../flightdata"); 
 
-const paymentRoutes = require('./payment');
-const Booking = require('./booking');
+const paymentRoutes = require('../payment');
+const Booking = require('../booking');
 
 
 // Replace with your actual connection string from MongoDB Atlas
@@ -33,16 +35,21 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const projectId = process.env.projectId;
+
 const sessionClient = new dialogflow.SessionsClient({
-  keyFilename: process.env.credentials
+  credentials: {
+    client_email: process.env.client_email,
+    private_key: process.env.private_key,
+  },
 });
 
-app.use('/api/payment', paymentRoutes);
-app.use('/api/auth', authRoutes);
+
+app.use('/.netlify/functions/server/api/payment', paymentRoutes);
+app.use('/.netlify/functions/server/api/auth', authRoutes);
 
 
 // Webhook route
-app.post('/webhook', (req, res) => {
+app.post('/.netlify/functions/server/webhook', (req, res) => {
   const intentName = req.body.queryResult.intent.displayName;
   const origin = req.body.queryResult.parameters['origin'];
   const destination = req.body.queryResult.parameters['destination'];
@@ -71,8 +78,9 @@ app.post('/webhook', (req, res) => {
 
 const sessionPath = (sessionId) => sessionClient.projectAgentSessionPath(projectId, sessionId);
 
-app.post('/api/message', async (req, res) => {
-  const message = req.body.message;
+app.post('/.netlify/functions/server/api/message', async (req, res) => {
+  const body = JSON.parse(req.body)
+  const message = body.message;
   const sessionId = uuidv4();
 
   const request = {
@@ -110,12 +118,8 @@ app.post('/api/message', async (req, res) => {
     // Normalize travel date to YYYY-MM-DD
     const isoDate = new Date(travelDateRaw).toISOString().split('T')[0];
 
-    // Load flight data
-    const dataPath = path.join(__dirname, './flightData.json');
-    const allFlights = JSON.parse(fs.readFileSync(dataPath));
-
     // Filter flights by mandatory fields
-    let matchedFlights = allFlights.filter(flight =>
+    let matchedFlights = flights.filter(flight =>
       flight.origin.toLowerCase() === origin.toLowerCase() &&
       flight.destination.toLowerCase() === destination.toLowerCase() &&
       flight.date === isoDate
@@ -153,8 +157,9 @@ app.post('/api/message', async (req, res) => {
   }
 });
 
-app.post('/api/book', async (req, res) => {
-  const { flight, userId } = req.body;
+app.post('/.netlify/functions/server/api/book', async (req, res) => {
+  const body = JSON.parse(req.body);
+  const { flight, userId } = body;
 
   if (!flight || !flight.flightNumber || !flight.origin || !flight.destination || !userId) {
     return res.status(400).json({ error: 'Missing flight or user details.' });
@@ -190,7 +195,7 @@ app.post('/api/book', async (req, res) => {
   }
 });
 
-app.get("/bookings/:email", async (req, res) => {
+app.get("/.netlify/functions/server/bookings/:email", async (req, res) => {
   try {
     const userEmail = req.params.email;
 
@@ -204,7 +209,7 @@ app.get("/bookings/:email", async (req, res) => {
   }
 });
 
-app.delete("/bookings/:reference", async (req, res) => {
+app.delete("/.netlify/functions/server/bookings/:reference", async (req, res) => {
   try {
     const reference = req.params.reference;
 
@@ -223,6 +228,13 @@ app.delete("/bookings/:reference", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-});
+app.get("/.netlify/functions/server/", (req, res) => {
+  return res.json({message : "Hello, World"});
+})
+
+const handler = serverless(app);
+
+module.exports.handler = async (event, context) => {
+  const result = await handler(event, context);
+  return result;
+}
