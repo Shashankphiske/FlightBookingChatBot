@@ -4,7 +4,8 @@ the website url : https://flightbookingchatbot.netlify.app/, the backend is : ht
 
 you will be provided with a login page, if you dont have an account click on the register button and register yourself (if any errors just use : shashankphiske@gmail.com and pass : ssp )
 
-On successful login you will redirected to the home page, here type in the origin, destination and travel date. You may also give the company and the flight class. The text will be processes and you will be provided with a sample data that I have created. If that ticket has a price more than 0 then you will be shown a razorpay trial window when you click on Book Now button. If the price is 0 it will directly book the flight
+On successful login you will redirected to the home page, here type in the origin, destination and travel date. You may also give the company and the flight class. Eg : 
+"I want to go from Pune to Mumbai on 30th July". The text will be processes and you will be provided with a sample data that I have created. If that ticket has a price more than 0 then you will be shown a razorpay trial window when you click on Book Now button. If the price is 0 it will directly book the flight
 
 In the Itinerary tab you will be provided with an upcoming flights list and a past flights  that you have taken. From here you can cancel the flights which you have booked.
 
